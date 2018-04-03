@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 function RegisterTitle() {
   return (
@@ -21,10 +20,14 @@ class Fromfields extends React.Component {
       email: '',
       password: '',
       cpassword: '',
-      emailValidation: false,
-      unameValidation: false,
-      passwordValidation: false,
-      cpasswordValidation: false,
+      invalidData:true,
+      errorsList: {
+        emailValidation: true,
+        unameValidation: true,
+        passwordValidation: true,
+        cpasswordValidation: true
+      }
+      
     }
   }
 
@@ -44,34 +47,41 @@ class Fromfields extends React.Component {
   };
 
   chkvalidations = (name) =>{
-    let errors = {};
+    let errors = this.state.errorsList;
     switch(name){
       case "email":
       const emailCheck = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
       if(!this.state.email.match(emailCheck)){
-        errors.email = true;
+        errors.emailValidation = true;
       }else {
-        errors.email = false;  
+        errors.emailValidation = false;  
       }
       break;
       case "uname":
-        errors.uname = this.state.uname.length < 6 ? true : false;
+        errors.unameValidation = this.state.uname.length < 6 ? true : false;
         break;
       case "password":
-        errors.password = this.state.password.length < 6 ? true : false;
+        errors.passwordValidation = this.state.password.length < 6 ? true : false;
         break;
       case "cpassword":
-        errors.cpassword = (this.state.password.length > 0 && this.state.password !== this.state.cpassword) ? true : false;
+        errors.cpasswordValidation = (this.state.password.length > 0 && this.state.password !== this.state.cpassword) ? true : false;
+        break;
       default: 
       break;
     };
     this.setState({
-      emailValidation: errors.email,
-      unameValidation: errors.uname,
-      passwordValidation: errors.password,
-      cpasswordValidation: errors.cpassword
+      errorsList: errors
     });
+    // console.log(this.state.errorsList);
+    // console.log(errors)
+    // console.log(this.state.emailValidation && this.state.unameValidation && this.state.passwordValidation && this.state.cpasswordValidation);
+    if(!errors.emailValidation && !errors.unameValidation && !errors.passwordValidation && !errors.cpasswordValidation){
+      this.setState({
+        invalidData: false
+      });
+    }
   } 
+  
 
   render() {
     return (
@@ -113,75 +123,92 @@ class Fromfields extends React.Component {
               name="zip"
               placeholder="Zip Code"
             />
-            <br />
           </div>
         </div>
         <div className="form-group has-success">
-          <div className="input-group">
-            <span className="input-group-addon"><i className="fa fa-envelope"></i></span>
+          <div className="input-group"> 
+            <span className="input-group-addon">
+            <i className={(this.state.email.length > 0 && this.state.errorsList.emailValidation) ? 'redme fa fa-envelope ' : 'fa fa-envelope'} ></i>
+            </span>
             <input type="email"
-              className={this.state.emailValidation ? 'showerror' : ''}
+              className={this.state.email.length > 0 && this.state.errorsList.emailValidation ? 'showerror' : ''}
               onChange={this.inputChanged}
               id="email"
               name="email"
               placeholder="Email id"
               required
             />
-            <br />
+            <span>
+              <i className= {this.state.email.length > 0 && this.state.errorsList.emailValidation ? 'fa fa-warning warnstytle' : ''} ></i>
+            </span>
           </div>
         </div>
 
         <div className="form-group has-success">
           <div className="input-group">
-            <span className="input-group-addon"><i className="fa fa-user"></i></span>
+          <span className="input-group-addon">
+            <i className={(this.state.uname.length > 0 && this.state.errorsList.unameValidation) ? 'redme fa fa-user ' : 'fa fa-user'} ></i>
+          </span>
+             
             <input type="text"
-              className={this.state.unameValidation ? 'showerror' : ''}
+              className={this.state.uname.length > 0 && this.state.errorsList.unameValidation ? 'showerror' : ''}
               onChange={this.inputChanged}
               id="uname"
               name="uname"
               placeholder="User Name"
               required
             />
-            <br />
+            <span>
+              <i className= {this.state.uname.length > 0 && this.state.errorsList.unameValidation ? 'fa fa-warning warnstytle' : ''} ></i>
+            </span>
           </div>
         </div>
         <div className="form-group has-success">
           <div className="input-group">
-            <span className="input-group-addon"><i className="fa fa-lock"></i></span>
+          <span className="input-group-addon">
+            <i className={(this.state.password.length > 0 && this.state.errorsList.passwordValidation) ? 'redme fa fa-lock ' : 'fa fa-lock'} ></i>
+            </span>
             <input type="password"
-              className={this.state.passwordValidation ? 'showerror' : ''}
+              className={this.state.password.length > 0 &&this.state.errorsList.passwordValidation ? 'showerror' : ''}
               onChange={this.inputChanged}
               id="password"
               name="password"
               placeholder="Password"
               required
             />
-            <br />
+            <span>
+            <i className= {this.state.password.length > 0 &&this.state.errorsList.passwordValidation ? 'fa fa-warning warnstytle' : ''} ></i>
+            </span>
           </div>
         </div>
         <div className="form-group has-success">
           <div className="input-group">
-            <span className="input-group-addon"><i className="fa fa-unlock"></i></span>
+          <span className="input-group-addon">
+            <i className={(this.state.cpassword.length > 0 && this.state.errorsList.cpasswordValidation) ? 'redme fa fa-unlock ' : 'fa fa-unlock'} ></i>
+            </span>
             <input type="password"
-
-              className={this.state.cpasswordValidation ? 'showerror' : ''}
+              className={this.state.cpassword.length > 0 && this.state.errorsList.cpasswordValidation ? 'showerror' : ''}
               onChange={this.inputChanged}
               id="cpassword"
               name="cpassword"
               placeholder="Confirm Password"
               required
             />
-            <br />
+
+            <span>
+            <i className= {this.state.cpassword.length > 0 &&this.state.errorsList.cpasswordValidation ? 'fa fa-warning warnstytle' : ''} ></i>
+            </span>
           </div>
         </div><br />
-        <div className={(this.state.emailValidation || this.state.unameValidation || this.state.passwordValidation || this.state.cpasswordValidation)?"errorwrap":""}>
-          <div className={this.state.emailValidation ? 'showeme' : 'hideme'}>Invalid email</div>
-          <div className={this.state.unameValidation ? 'showeme' : 'hideme'}>user name is required(minimum 6 chacters)</div>
-          <div className={this.state.passwordValidation ? 'showeme' : 'hideme'}>Password is required(minimum 6 chacters)</div>
-          <div className={this.state.cpasswordValidation ? 'showeme' : 'hideme'}>Confirm Password is mismatched</div>
+        <div className={(this.state.errorsList.emailValidation || this.state.errorsList.unameValidation || this.state.errorsList.passwordValidation || this.state.errorsList.cpasswordValidation)?"errorwrap":""}>
+          <div className={(this.state.email.length > 0 && this.state.errorsList.emailValidation) ? 'showeme' : 'hideme'}>Invalid email</div>
+          <div className={this.state.uname.length > 0 && this.state.errorsList.unameValidation ? 'showeme' : 'hideme'}>user name is required(minimum 6 chacters)</div>
+          <div className={this.state.password.length > 0 && this.state.errorsList.passwordValidation ? 'showeme' : 'hideme'}>Password is required(minimum 6 chacters)</div>
+          <div className={this.state.cpassword.length > 0 && this.state.errorsList.cpasswordValidation ? 'showeme' : 'hideme'}>Confirm Password is mismatched</div>
         </div>
         <div className="registerbtnwrap">
-          <button className="registerbtn" tyep="submit" disabled={(!this.state.emailValidation || !this.state.unameValidation || !this.state.passwordValidation || !this.state.cpasswordValidation)}> Register </button>
+          <button className="registerbtn" tyep="button"
+           disabled={this.state.invalidData}> Register </button>
         </div>
       </form>
 
