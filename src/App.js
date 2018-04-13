@@ -45,13 +45,16 @@ class Comments extends React.Component{
   class Comment extends React.Component{
     constructor(props){
       super(props)
+    //  this.removeBtn=this.removeBtn.bind(this);
+    }
+    removeBtn(e){
+    //  let newComment = [...this.state.comments]
+      console.log(e)
     }
  
-    removeBtn (){
-     alert("e")
-     console.log()
-    } 
     render(){
+      // let comments = this.state.comments
+      
       return (
         <div className="col-sm-3">
           <div className="panel panel-default">
@@ -60,7 +63,7 @@ class Comments extends React.Component{
             <div className="panel-footer"> 
               <LikeButton />
               <div className="text-right">
-                <button className="btn btn-danger btn-sm" onClick={this.removeBtn}>remove </button>
+                <button className="btn btn-danger btn-sm" onClick={ (e) => this.removeBtn(e)}>remove11 </button>
               </div>
             </div>  
           </div>
@@ -69,12 +72,21 @@ class Comments extends React.Component{
     }  
 }
 class CommentList extends React.Component{
+  constructor(){
+    super()
+  }
+  deleteCom = (i) =>{
+    console.log("")
+    // this.props.deleteComment(i);
+  }
   render(){
+    console.log(this.props)
     return (
       <div>
-        {
-          this.props.commentsdata.map(function(comment,i){
-            return  <Comment key={i} title={comment.title} desc={comment.desc}  />       
+        {this.props.commentsdata.map(function(comment,i){
+            return (
+            <Comment key={i}  title={comment.title} desc={comment.desc} index = {i} />  
+            )
           })
         } 
     </div>
@@ -99,10 +111,17 @@ class App extends React.Component {
     newComments.push(data);
     this.setState({comments:newComments}); 
     console.log(this.state)
- 
-    
   }
+  deleteComment = (data) => {
+    const items = [...this.state.comments];
+    items.splice(data,1);
+    this.setState({
+      comments: items
+    })
+  };
+
   render() {
+    let coments=this.state.comments;
     return (
       <div>
         <div className="myContainer">
@@ -122,25 +141,26 @@ class App extends React.Component {
 }
 class LikeButton extends React.Component {
   constructor() {
-  super();
-  this.state = {
-    liked: false
-  };
-  this.handleClick = this.handleClick.bind(this);
-  } 
-
-  handleClick() {
-  this.setState({
-    liked: !this.state.liked
-  });
+    super();
+    this.state = {
+      counter: 0
+    };
+    this.handleClick = this.handleClick.bind(this);
   }
+  handleClick(){
+    this.setState(
+      (prevState) => ({
+        counter:prevState.counter+1
+      })
+    )  
+}
+  
 
   render() {
-  const label = this.state.liked ? 'Unlike' : 'Like'
   return (
     <div className="customContainer">
       <div className="pull-left">
-      <input className="btn btn-primary btn-sm " type="button" onClick={this.handleClick} value ={label} />
+      <button className="btn btn-primary btn-sm " type="button" onClick={this.handleClick} >{this.state.counter} Like </button>
       
       </div>
     </div>
